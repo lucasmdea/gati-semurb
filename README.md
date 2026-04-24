@@ -1,3 +1,4 @@
+
 # Atendimentos TI — SEMURB Natal
 
 Sistema web interno para registro de atendimentos da equipe de T.I., com:
@@ -120,4 +121,26 @@ cat backup_atendimentos.sql | docker compose exec -T db psql -U atend_user atend
 
 ## Manual operacional
 
-- Manual de técnicos (uso do sistema): `docs/MANUAL_TECNICOS.md`
+- Manual de técnicos (uso do sistema): `docs/MANUAL_TECNICOS.md
+# GATI-semurb
+Sistema Gestor para Atendimentos de TI da Secretaria Municipal de Meio Ambiente e Urbanismo de Natal/RN.
+
+## Suporte
+Responsável pelo registro e acompanhamento das atividades relacionadas ao suporte técnico:
+### Cadastro de Atividades
+ - Email Institucionais
+ - Directa
+ - E-Doc
+ - Licenças de softwares terceiros
+### Equipamentos
+Voltado à gestão do ciclo de vida dos ativos de TI e do fluxo de movimentação rotineira:
+ - Manutenção Preventiva
+ - Manutenção Corretiva
+ - Reparos
+ - Gerenciamento de estoque de ativos
+### Impressoras
+Destinado ao controle específico de dispositivos de impressão:
+ - Abertura de chamados
+ - Controle de suprimentos
+ - Cadastro de atividades
+
