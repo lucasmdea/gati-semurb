@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Lista de chamados{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h3 class="m-0">Lista completa</h3>
+    <div class="text-muted small">Inclui chamados concluídos</div>
+  </div>
+  <a class="btn btn-semurb-outline" href="{% url 'tech_queue' %}">Voltar fila</a>
+</div>
+
+<form class="card shadow-sm mb-3">
+  <div class="card-body">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Status</label>
+        <select name="status" class="form-select">
+          <option value="">Todos</option>
+          {% for val,label in status_choices %}
+            <option value="{{ val }}" {% if filters.status == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Técnico</label>
+        <select name="tech" class="form-select">
+          <option value="">Todos</option>
+          {% for u in techs %}
+            <option value="{{ u.id }}" {% if filters.tech == u.id|stringformat:"s" %}selected{% endif %}>
+              {{ u.get_full_name|default:u.username }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Setor</label>
+        <select name="sector" class="form-select">
+          <option value="">Todos</option>
+          {% for s in sectors %}
+            <option value="{{ s.id }}" {% if filters.sector == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Tipo</label>
+        <select name="type" class="form-select">
+          <option value="">Todos</option>
+          {% for t in types %}
+            <option value="{{ t.id }}" {% if filters.type == t.id|stringformat:"s" %}selected{% endif %}>{{ t.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Solicitante</label>
+        <input name="requester" class="form-control" value="{{ filters.requester }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Busca</label>
+        <input name="q" class="form-control" value="{{ filters.q }}" placeholder="Assunto, descrição, notas...">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Serial</label>
+        <input name="serial" class="form-control" value="{{ filters.serial }}" placeholder="Serial do ativo">
+      </div>
+
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-semurb" type="submit">Filtrar</button>
+        <a class="btn btn-semurb-outline" href="{% url 'tech_ticket_list' %}">Limpar</a>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Status</th>
+            <th>Aberto</th>
+            <th>Assunto</th>
+            <th>Solicitante</th>
+            <th>Setor</th>
+            <th>Tipo</th>
+            <th>Técnico</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in tickets %}
+            <tr>
+              <td><a href="{% url 'tech_ticket_work' t.id %}" class="link-dark fw-semibold">#{{ t.id }}</a></td>
+              <td>{{ t.get_status_display }}</td>
+              <td class="text-muted small">{{ t.created_at|date:"d/m/Y H:i" }}</td>
+              <td>{{ t.subject }}</td>
+              <td>{{ t.requester_display }}</td>
+              <td>{{ t.sector.name }}</td>
+              <td>{{ t.service_type.name }}</td>
+              <td>{% if t.technician %}{{ t.technician.get_full_name|default:t.technician.username }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="8" class="text-muted p-3">Nenhum resultado.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

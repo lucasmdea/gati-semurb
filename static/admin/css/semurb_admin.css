@@ -1,0 +1,24 @@
+:root{
+  --semurb-blue: #0b4f8a;
+  --semurb-blue-dark: #083b68;
+  --semurb-yellow: #f2c200;
+}
+
+/* Topbar / sidebar */
+.navbar-white { border-bottom: 2px solid var(--semurb-blue) !important; }
+.main-sidebar { background-color: var(--semurb-blue) !important; }
+.main-sidebar .nav-sidebar .nav-link,
+.main-sidebar .brand-link { color: #fff !important; }
+.main-sidebar .nav-sidebar .nav-link.active{
+  background-color: rgba(255,255,255,.18) !important;
+}
+
+/* Botões */
+.btn-primary{
+  background-color: var(--semurb-blue) !important;
+  border-color: var(--semurb-blue) !important;
+}
+.btn-primary:hover{
+  background-color: var(--semurb-blue-dark) !important;
+  border-color: var(--semurb-blue-dark) !important;
+}

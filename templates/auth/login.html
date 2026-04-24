@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="login-page">
+  <div class="login-card shadow-sm">
+    <div class="login-brand">
+      <img src="{% static 'img/logo_login.png' %}" alt="SEMURB Natal" class="login-logo">
+      <div class="login-title">Sistema de Chamados</div>
+      <div class="login-subtitle">SEMURB Natal</div>
+    </div>
+
+    <form method="post" class="login-form">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label class="form-label">Usuário</label>
+        {{ form.username }}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Senha</label>
+        {{ form.password }}
+      </div>
+
+      <button class="btn btn-primary w-100 py-2" type="submit">Entrar</button>
+    </form>
+
+    <div class="login-footnote">
+      Suporte TI • Prefeitura do Natal
+    </div>
+  </div>
+</div>
+{% endblock %}

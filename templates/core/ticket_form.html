@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="mb-3">
+  <label>Tipo de Atendimento</label>
+  {{ form.activity }}
+  </div>
+  <div class="card-body">
+    <p class="text-muted mb-2">Técnico: <strong>{{ user.get_full_name|default:user.username }}</strong></p>
+
+    <!-- FORM PRINCIPAL: tudo é enviado em um único POST e salvo junto (Ticket + suprimentos + ativos + estoque). -->
+<form method="post">
+      {% csrf_token %}
+
+      <!-- Abas -->
+      <!-- ABAS: Bootstrap Tabs. A aba 'Novo atendimento' é a inicial (active). -->
+<ul class="nav nav-tabs mb-3" id="ticketTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tab-atendimento" data-bs-toggle="tab" data-bs-target="#pane-atendimento" type="button" role="tab">
+            Novo Atendimento
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-ativos" data-bs-toggle="tab" data-bs-target="#pane-ativos" type="button" role="tab">
+            Ativos
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-estoque" data-bs-toggle="tab" data-bs-target="#pane-estoque" type="button" role="tab">
+            Baixa de Estoque
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="ticketTabsContent">
+        <!-- Aba 1: Novo atendimento (padrão) -->
+        <div class="tab-pane fade show active" id="pane-atendimento" role="tabpanel" aria-labelledby="tab-atendimento">
+          <h5 class="mb-3">Novo Atendimento</h5>
+
+          <div class="row g-2">
+            <div class="col-md-3">{{ form.attended_at.label_tag }}{{ form.attended_at }}</div>
+            <div class="col-md-3">{{ form.sector.label_tag }}{{ form.sector }}</div>
+            <div class="col-md-3">{{ form.service_type.label_tag }}{{ form.service_type }}</div>
+            <div class="col-md-3">{{ form.requester_name.label_tag }}{{ form.requester_name }}</div>
+            <div class="col-12">{{ form.notes.label_tag }}{{ form.notes }}</div>
+          </div>
+
+          <hr class="my-4"/>
+
+          <h6>Suprimentos Usados</h6>
+          <!-- SUPRIMENTOS (LEGADO): linhas do formset TicketSupplyFormSet. -->
+          {{ formset.management_form }}
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Suprimento</th>
+                  <th style="width: 160px;">Quantidade</th>
+                  <th style="width: 80px;">Remover</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for f in formset %}
+                  <tr>
+                    <td>{{ f.supply }}</td>
+                    <td>{{ f.quantity }}</td>
+                    <td class="text-center">{{ f.DELETE }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Salvar</button>
+            <a class="btn btn-outline-secondary" href="{% url 'ticket_list' %}">Voltar</a>
+          </div>
+        </div>
+
+        <!-- Aba 2: Ativos -->
+        <div class="tab-pane fade" id="pane-ativos" role="tabpanel" aria-labelledby="tab-ativos">
+          <h5 class="mb-3">Ativos</h5>
+
+          <h6>Ativos (por serial)</h6>
+          <!-- ATIVOS POR SERIAL: linhas do TicketAssetFormSet. Digite o serial já cadastrado no inventário. -->
+          {{ asset_formset.management_form }}
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Serial</th>
+                  <th>Ação</th>
+                  <th>Nota</th>
+                  <th style="width: 80px;">Remover</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for f in asset_formset %}
+                  <tr>
+                    <td>{{ f.serial }}</td>
+                    <td>{{ f.action }}</td>
+                    <td>{{ f.note }}</td>
+                    <td class="text-center">{{ f.DELETE }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <p class="text-muted small mb-0">Dica: cadastre o ativo no inventário (Admin) antes de usar o serial aqui.</p>
+        </div>
+
+        <!-- Aba 3: Estoque -->
+        <div class="tab-pane fade" id="pane-estoque" role="tabpanel" aria-labelledby="tab-estoque">
+          <h5 class="mb-3">Baixa de Estoque</h5>
+
+          <h6>Baixa de Estoque (Qntds)</h6>
+          <!-- BAIXA DE ESTOQUE: linhas do TicketStockUsageFormSet. Isso registra baixa e movimentação do estoque. -->
+          {{ stock_formset.management_form }}
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th style="width: 160px;">Quantidade</th>
+                  <th style="width: 80px;">Remover</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for f in stock_formset %}
+                  <tr>
+                    <td>{{ f.stock_item }}</td>
+                    <td>{{ f.quantity }}</td>
+                    <td class="text-center">{{ f.DELETE }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div> <!-- /tab-content -->
+
+    </form>
+  </div>
+</div>
+{% endblock %}

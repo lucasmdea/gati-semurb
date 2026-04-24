@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}Atender #{{ ticket.id }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <div>
+    <h3 class="mb-1">Atender chamado #{{ ticket.id }}</h3>
+    <div class="text-muted">{{ ticket.subject }}</div>
+  </div>
+  <span class="badge badge-status text-white
+    {% if ticket.status == 'OPEN' %}badge-open{% elif ticket.status == 'IN_PROGRESS' %}badge-inprogress{% elif ticket.status == 'DONE' %}badge-done{% else %}badge-canceled{% endif %}">
+    {{ ticket.get_status_display }}
+  </span>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-2">Resumo</h5>
+        <div class="small text-muted">Solicitante</div>
+        <div class="mb-2">{{ ticket.requester_display }}</div>
+
+        <div class="small text-muted">Setor</div>
+        <div class="mb-2">{{ ticket.sector.name }}</div>
+
+        <div class="small text-muted">Tipo</div>
+        <div class="mb-2">{{ ticket.service_type.name }}</div>
+
+        <div class="small text-muted">Aberto em</div>
+        <div class="mb-2">{{ ticket.created_at|date:"d/m/Y H:i" }}</div>
+
+        <div class="small text-muted">Técnico</div>
+        <div class="mb-0">{{ ticket.technician.get_full_name|default:ticket.technician.username }}</div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mt-3">
+      <div class="card-body">
+        <h5 class="mb-2">Descrição</h5>
+        <p class="mb-0" style="white-space: pre-wrap;">{{ ticket.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <form method="post">
+          {% csrf_token %}
+
+          <ul class="nav nav-tabs mb-3" id="workTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pane-status" type="button" role="tab">Status</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pane-ativos" type="button" role="tab">Ativos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pane-estoque" type="button" role="tab">Baixa de estoque</button>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="pane-status" role="tabpanel">
+              <div class="row g-2">
+                <div class="col-md-4">
+                  <label class="form-label">Status</label>
+                  {{ update_form.status }}
+                  {% if update_form.status.errors %}<div class="text-danger small">{{ update_form.status.errors }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Concluído em</label>
+                  {{ update_form.attended_at }}
+                  {% if update_form.attended_at.errors %}<div class="text-danger small">{{ update_form.attended_at.errors }}</div>{% endif %}
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Notas internas</label>
+                  {{ update_form.notes }}
+                  {% if update_form.notes.errors %}<div class="text-danger small">{{ update_form.notes.errors }}</div>{% endif %}
+                </div>
+              </div>
+
+              <hr class="my-3">
+
+              <h6 class="mb-2">Suprimentos (legado)</h6>
+              {{ supply_formset.management_form }}
+              <div class="vstack gap-2">
+                {% for f in supply_formset.forms %}
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-7">{{ f.supply.label_tag }}{{ f.supply }}</div>
+                    <div class="col-md-3">{{ f.quantity.label_tag }}{{ f.quantity }}</div>
+                    <div class="col-md-2">
+                      {% if f.instance.pk %}{{ f.DELETE }} <span class="small text-muted">Remover</span>{% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="pane-ativos" role="tabpanel">
+              {{ asset_formset.management_form }}
+              <div class="vstack gap-2">
+                {% for f in asset_formset.forms %}
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                      <label class="form-label">Serial</label>
+                      {{ f.serial }}
+                      {% if f.serial.errors %}<div class="text-danger small">{{ f.serial.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-3">
+                      <label class="form-label">Ação</label>
+                      {{ f.action }}
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Nota</label>
+                      {{ f.note }}
+                    </div>
+                    <div class="col-md-1">
+                      <label class="form-label">X</label>
+                      {{ f.DELETE }}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              {% if ticket.assets.all %}
+                <hr class="my-3">
+                <h6 class="mb-2">Ativos já vinculados</h6>
+                <ul class="mb-0">
+                  {% for a in ticket.assets.all %}
+                    <li>{{ a.asset_item.asset_type.name }} — {{ a.asset_item.serial }} {% if a.action %}({{ a.action }}){% endif %}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
+            <div class="tab-pane fade" id="pane-estoque" role="tabpanel">
+              {{ stock_formset.management_form }}
+              <div class="vstack gap-2">
+                {% for f in stock_formset.forms %}
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-8">
+                      <label class="form-label">Item</label>
+                      {{ f.stock_item }}
+                    </div>
+                    <div class="col-md-3">
+                      <label class="form-label">Qtd</label>
+                      {{ f.quantity }}
+                    </div>
+                    <div class="col-md-1">
+                      <label class="form-label">X</label>
+                      {% if f.instance.pk %}{{ f.DELETE }}{% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+
+              {% if ticket.stock_usages.all %}
+                <hr class="my-3">
+                <h6 class="mb-2">Baixas registradas</h6>
+                <ul class="mb-0">
+                  {% for u in ticket.stock_usages.all %}
+                    <li>{{ u.stock_item.name }} — {{ u.quantity }} {{ u.stock_item.unit }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-semurb" type="submit">Salvar</button>
+            <a class="btn btn-semurb-outline" href="{% url 'ticket_detail' ticket.id %}">Ver detalhes</a>
+            <a class="btn btn-semurb-outline" href="{% url 'tech_queue' %}">Voltar fila</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

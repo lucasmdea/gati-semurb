@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Chamado #{{ t.id }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <div>
+    <h3 class="mb-1">Chamado #{{ t.id }}</h3>
+    <div class="text-muted">{{ t.subject }}</div>
+  </div>
+  <span class="badge badge-status text-white
+    {% if t.status == 'OPEN' %}badge-open{% elif t.status == 'IN_PROGRESS' %}badge-inprogress{% elif t.status == 'DONE' %}badge-done{% else %}badge-canceled{% endif %}">
+    {{ t.get_status_display }}
+  </span>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-2">Descrição</h5>
+        <p class="mb-0" style="white-space: pre-wrap;">{{ t.description }}</p>
+      </div>
+    </div>
+
+    {% if t.notes %}
+      <div class="card shadow-sm mt-3">
+        <div class="card-body">
+          <h5 class="mb-2">Notas da TI</h5>
+          <p class="mb-0" style="white-space: pre-wrap;">{{ t.notes }}</p>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if IS_TECHNICIAN %}
+      <div class="mt-3">
+        <a class="btn btn-semurb" href="{% url 'tech_ticket_work' t.id %}">Atender / Atualizar</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-3">Dados</h5>
+        <div class="small text-muted">Solicitante</div>
+        <div class="mb-2">{{ t.requester_display }}</div>
+
+        <div class="small text-muted">Setor</div>
+        <div class="mb-2">{{ t.sector.name }}</div>
+
+        <div class="small text-muted">Tipo</div>
+        <div class="mb-2">{{ t.service_type.name }}</div>
+
+        <div class="small text-muted">Aberto em</div>
+        <div class="mb-2">{{ t.created_at|date:"d/m/Y H:i" }}</div>
+
+        <div class="small text-muted">Técnico</div>
+        <div class="mb-2">
+          {% if t.technician %}
+            {{ t.technician.get_full_name|default:t.technician.username }}
+          {% else %}
+            <span class="text-muted">Atribuição pendente</span>
+          {% endif %}
+        </div>
+
+        {% if t.attended_at %}
+          <div class="small text-muted">Concluído em</div>
+          <div>{{ t.attended_at|date:"d/m/Y H:i" }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

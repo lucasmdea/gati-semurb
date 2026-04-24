@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Fila TI{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h3 class="m-0">Fila da TI</h3>
+    <div class="text-muted small">Chamados abertos e em andamento</div>
+  </div>
+  <a class="btn btn-semurb-outline" href="{% url 'tech_ticket_list' %}">Ver lista completa</a>
+</div>
+
+<form class="card shadow-sm mb-3">
+  <div class="card-body">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Status</label>
+        <select name="status" class="form-select">
+          <option value="">Todos</option>
+          <option value="OPEN" {% if filters.status == 'OPEN' %}selected{% endif %}>Aberto</option>
+          <option value="IN_PROGRESS" {% if filters.status == 'IN_PROGRESS' %}selected{% endif %}>Em andamento</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Somente meus</label>
+        <select name="mine" class="form-select">
+          <option value="">Não</option>
+          <option value="1" {% if filters.mine == '1' %}selected{% endif %}>Sim</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small text-muted">Busca</label>
+        <input name="q" class="form-control" value="{{ filters.q }}" placeholder="Assunto, descrição, solicitante...">
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-semurb" type="submit">Filtrar</button>
+        <a class="btn btn-semurb-outline" href="{% url 'tech_queue' %}">Limpar</a>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% if tickets %}
+  <div class="list-group shadow-sm">
+    {% for t in tickets %}
+      <a class="list-group-item list-group-item-action" href="{% url 'tech_ticket_work' t.id %}">
+        <div class="d-flex justify-content-between">
+          <div>
+            <div class="fw-semibold">#{{ t.id }} — {{ t.subject }}</div>
+            <div class="text-muted small">
+              {{ t.created_at|date:"d/m/Y H:i" }} • {{ t.sector.name }} • {{ t.service_type.name }} • {{ t.requester_display }}
+            </div>
+            {% if t.technician %}
+              <div class="small">Técnico: <span class="text-muted">{{ t.technician.get_full_name|default:t.technician.username }}</span></div>
+            {% endif %}
+          </div>
+          <span class="badge badge-status text-white
+            {% if t.status == 'OPEN' %}badge-open{% else %}badge-inprogress{% endif %}">
+            {{ t.get_status_display }}
+          </span>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card shadow-sm">
+    <div class="card-body">Nada na fila. Ou a TI está voando… ou o Wi‑Fi caiu e ninguém conseguiu abrir chamado. 😄</div>
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,275 @@
+/* static/css/app.css */
+/* Azul institucional SEMURB */
+:root{
+  --semurb-blue: #0b4f8a;
+  --semurb-blue-dark: #083b68;
+  --semurb-yellow: #f2c200;
+  --semurb-bg: #f6f8fb;
+  --semurb-text: #0f172a;
+  --semurb-muted: #475569;
+  --semurb-border: #e2e8f0;
+}
+
+body { background: var(--semurb-bg); color: var(--semurb-text); }
+
+/* Navbar */
+.navbar { border-bottom: 1px solid var(--semurb-border); }
+.navbar-light .navbar-brand, .navbar-light .navbar-nav .nav-link { color: var(--semurb-text); }
+
+/* Botões padrão do sistema (Bootstrap overrides) */
+.btn-primary{
+  background-color: var(--semurb-blue) !important;
+  border-color: var(--semurb-blue) !important;
+}
+.btn-primary:hover{
+  background-color: var(--semurb-blue-dark) !important;
+  border-color: var(--semurb-blue-dark) !important;
+}
+
+/* Botões SEMURB (navbar e ações) */
+.btn-semurb{
+  background-color: var(--semurb-blue);
+  border-color: var(--semurb-blue);
+  color:#fff;
+}
+.btn-semurb:hover{
+  background-color: var(--semurb-blue-dark);
+  border-color: var(--semurb-blue-dark);
+  color:#fff;
+}
+.btn-semurb-outline{
+  background: transparent;
+  border: 1px solid var(--semurb-blue);
+  color: var(--semurb-blue);
+}
+.btn-semurb-outline:hover{
+  background: var(--semurb-blue);
+  color:#fff;
+}
+.btn-semurb-exit{
+  background: var(--semurb-yellow);
+  border-color: var(--semurb-yellow);
+  color:#000;
+}
+.btn-semurb-exit:hover{
+  background:#d9ad00;
+  border-color:#d9ad00;
+  color:#000;
+}
+
+/* Cards */
+.card{
+  border: 1px solid var(--semurb-border);
+  border-radius: 14px;
+}
+
+/* Tabelas */
+.table thead th{
+  background: #eaf3ff;
+  border-bottom: 1px solid var(--semurb-border);
+  color: var(--semurb-text);
+  font-weight: 700;
+}
+.table td, .table th{ vertical-align: middle; }
+.table tbody tr:hover{ background: #f1f7ff; }
+
+/* Badges */
+.badge.text-bg-info, .badge.bg-info{
+  background-color: #dbeafe !important;
+  color: #0b4f8a !important;
+  border: 1px solid #bfdbfe;
+}
+
+/* Links */
+a{ color: var(--semurb-blue); }
+a:hover{ color: var(--semurb-blue-dark); }
+
+/* Logos */
+.logo-navbar{ height: 42px; width:auto; object-fit:contain; }
+
+
+body { 
+    background: #f6f7fb; 
+}
+
+.navbar { 
+    border-bottom: 1px solid rgba(255,255,255,.08); 
+}
+
+.card { 
+    border-radius: 14px; 
+}
+
+.table td, .table th { 
+    vertical-align: middle; 
+}
+
+.col-data {
+  width: 140px;
+  white-space: nowrap;
+}
+
+.col-tecnico {
+  width: 180px;
+}
+
+.col-setor {
+  width: 160px;
+}
+
+.col-solicitante {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-ativos {
+  width: 220px;
+}
+
+.table input,
+.table select {
+  width: 100%;
+}
+
+.logo-navbar {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+}
+
+
+.text-center {
+  text-align: center;
+}
+
+.text-end {
+  text-align: right;
+}
+
+/* Botões SEMURB */
+.btn-semurb {
+  background-color: var(--semurb-blue);
+  border-color: var(--semurb-blue);
+  color: #fff;
+}
+
+.btn-semurb:hover {
+  background-color: var(--semurb-blue-dark);
+  border-color: var(--semurb-blue-dark);
+  color: #fff;
+}
+
+.btn-semurb-outline {
+  background-color: transparent;
+  border: 1px solid var(--semurb-blue);
+  color: var(--semurb-blue);
+}
+
+.btn-semurb-outline:hover {
+  background-color: var(--semurb-blue);
+  color: #fff;
+}
+
+/* Botão Sair (amarelo institucional) */
+.btn-semurb-exit {
+  background-color: var(--semurb-yellow);
+  border-color: var(--semurb-yellow);
+  color: #000;
+}
+
+.btn-semurb-exit:hover {
+  background-color: #d9ad00;
+  border-color: #d9ad00;
+  color: #000;
+}
+
+/* ===== Login (SEMURB) ===== */
+.login-page{
+  min-height: calc(100vh - 72px); /* desconta a navbar */
+  display: grid;
+  place-items: center;
+  padding: 24px 12px;
+  background:
+    radial-gradient(1200px 600px at 10% 0%, rgba(11,79,138,.10), transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, rgba(242,194,0,.12), transparent 55%),
+    var(--semurb-bg);
+}
+
+.login-card{
+  width: min(480px, 92vw);
+  border: 1px solid var(--semurb-border);
+  border-radius: 18px;
+  background: #fff;
+  padding: 22px;
+}
+
+.login-brand{
+  text-align: center;
+  padding: 6px 8px 16px;
+}
+
+.login-logo{
+  max-height: 88px;
+  width: auto;
+  object-fit: contain;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.login-title{
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: .2px;
+}
+
+.login-subtitle{
+  color: var(--semurb-muted);
+  font-size: .95rem;
+  margin-top: 2px;
+}
+
+.login-form .form-control{
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--semurb-border);
+}
+
+.login-form .form-control:focus{
+  border-color: rgba(11,79,138,.55);
+  box-shadow: 0 0 0 .2rem rgba(11,79,138,.15);
+}
+
+.login-footnote{
+  text-align: center;
+  color: var(--semurb-muted);
+  font-size: .85rem;
+  margin-top: 14px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"]{
+  width: 100%;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--semurb-border);
+}
+
+
+
+
+/* Status badges */
+.badge-status{
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+.badge-open{ background:#0b4f8a; }
+.badge-inprogress{ background:#6b7280; }
+.badge-done{ background:#16a34a; }
+.badge-canceled{ background:#dc2626; }
+
+/* Forms */
+.form-control, .form-select{
+  border-radius: 10px;
+}

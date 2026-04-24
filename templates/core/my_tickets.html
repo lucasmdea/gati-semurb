@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Meus chamados{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="m-0">Meus chamados</h3>
+  <a class="btn btn-semurb" href="{% url 'ticket_new' %}">Abrir novo</a>
+</div>
+
+{% if tickets %}
+  <div class="list-group shadow-sm">
+    {% for t in tickets %}
+      <a class="list-group-item list-group-item-action" href="{% url 'ticket_detail' t.id %}">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="fw-semibold">#{{ t.id }} — {{ t.subject }}</div>
+            <div class="text-muted small">
+              {{ t.created_at|date:"d/m/Y H:i" }} • {{ t.sector.name }} • {{ t.service_type.name }}
+            </div>
+          </div>
+          <span class="badge badge-status text-white
+            {% if t.status == 'OPEN' %}badge-open{% elif t.status == 'IN_PROGRESS' %}badge-inprogress{% elif t.status == 'DONE' %}badge-done{% else %}badge-canceled{% endif %}">
+            {{ t.get_status_display }}
+          </span>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <p class="mb-2">Você ainda não abriu nenhum chamado.</p>
+      <a class="btn btn-semurb" href="{% url 'ticket_new' %}">Abrir meu primeiro chamado</a>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
