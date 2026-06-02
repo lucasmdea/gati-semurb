@@ -58,6 +58,59 @@ def is_technician(user) -> bool:
 def technician_required(view_func):
     return login_required(user_passes_test(is_technician)(view_func))
 
+def stock_overview(request):
+    query = request.GET.get("q", "")
+
+    stock_items = StockItem.objects.all()
+    supplies = Supply.objects.all()
+
+    if query:
+        stock_items = stock_items.filter(name__icontains=query)
+        supplies = supplies.filter(name__icontains=query)
+
+    context = {
+        "stock_items": stock_items,
+        "supplies": supplies,
+        "query": query,
+    }
+
+    return render(request, "core/stock_overview.html", context)
+
+@login_required
+@user_passes_test(is_technician)
+def stock_entry(request):
+    from .forms import StockEntryForm
+
+    form = StockEntryForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        stock_item = form.cleaned_data["stock_item"]
+        quantity = form.cleaned_data["quantity"]
+        note = form.cleaned_data["note"]
+
+        quantity = Decimal(quantity)
+
+        if quantity <= 0:
+            messages.error(request, "Quantidade inválida.")
+            return redirect("stock_entry")
+
+        # Atualiza estoque
+        stock_item.quantity += quantity
+        stock_item.save(update_fields=["quantity"])
+
+        # Registra movimentação
+        StockMovement.objects.create(
+            stock_item=stock_item,
+            kind=StockMovement.Kind.IN,
+            quantity=quantity,
+            moved_by=request.user,
+            note=note or "Entrada manual de estoque",
+        )
+
+        messages.success(request, "Entrada registrada com sucesso.")
+        return redirect("stock_overview")
+
+    return render(request, "core/stock_entry.html", {"form": form})
 
 @login_required
 def home(request):

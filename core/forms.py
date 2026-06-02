@@ -109,6 +109,13 @@ TicketAssetFormSet = formset_factory(
     can_delete=True,
 )
 
+class StockEntryForm(forms.Form):
+    stock_item = forms.ModelChoiceField(
+        queryset=StockItem.objects.filter(active=True),
+        label="Item"
+    )
+    quantity = forms.IntegerField(min_value=1, label="Quantidade")
+    note = forms.CharField(required=False, label="Observação")
 
 # ---- Baixa de estoque ----
 

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2>Entrada de Estoque</h2>
+
+    <form method="post" class="card p-3 shadow-sm">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>Item</label>
+            {{ form.stock_item }}
+        </div>
+
+        <div class="mb-3">
+            <label>Quantidade</label>
+            {{ form.quantity }}
+        </div>
+
+        <div class="mb-3">
+            <label>Observação</label>
+            {{ form.note }}
+        </div>
+
+        <button type="submit" class="btn btn-semurb">
+            Registrar Entrada
+        </button>
+
+        <a href="{% url 'stock_overview' %}" class="btn btn-secondary">
+            Voltar
+        </a>
+    </form>
+
+</div>
+{% endblock %}
