@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import stock_overview, stock_entry
 
 urlpatterns = [
     path("", views.home, name="home"),
